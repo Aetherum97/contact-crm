@@ -1,0 +1,68 @@
+<header class="header">
+  <div class="header__inner">
+    <a routerLink="/" class="header__logo" (click)="closeMenu()">
+      <svg class="header__logo-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="header__logo-text">Contact CRM</span>
+    </a>
+
+    <nav class="header__nav" aria-label="Main navigation">
+      <a
+        routerLink="/"
+        routerLinkActive="header__nav-link--active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="header__nav-link"
+      >Dashboard</a>
+      <a
+        routerLink="/contacts"
+        routerLinkActive="header__nav-link--active"
+        class="header__nav-link"
+      >Contacts</a>
+      <a
+        routerLink="/categories"
+        routerLinkActive="header__nav-link--active"
+        class="header__nav-link"
+      >Categories</a>
+      <a
+        routerLink="/favorites"
+        routerLinkActive="header__nav-link--active"
+        class="header__nav-link header__nav-link--favorites"
+      >
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" width="16" height="16">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Favorites
+      </a>
+    </nav>
+
+    <button
+      class="header__menu-btn"
+      (click)="toggleMenu()"
+      [attr.aria-expanded]="menuOpen()"
+      aria-label="Toggle navigation menu"
+    >
+      @if (menuOpen()) {
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" width="22" height="22">
+          <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      } @else {
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" width="22" height="22">
+          <path d="M3 12h18M3 6h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      }
+    </button>
+  </div>
+
+  @if (menuOpen()) {
+    <nav class="header__mobile-nav" aria-label="Mobile navigation">
+      <a routerLink="/" routerLinkActive="header__mobile-link--active" [routerLinkActiveOptions]="{ exact: true }" class="header__mobile-link" (click)="closeMenu()">Dashboard</a>
+      <a routerLink="/contacts" routerLinkActive="header__mobile-link--active" class="header__mobile-link" (click)="closeMenu()">Contacts</a>
+      <a routerLink="/categories" routerLinkActive="header__mobile-link--active" class="header__mobile-link" (click)="closeMenu()">Categories</a>
+      <a routerLink="/favorites" routerLinkActive="header__mobile-link--active" class="header__mobile-link" (click)="closeMenu()">Favorites</a>
+    </nav>
+  }
+</header>

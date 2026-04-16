@@ -1,0 +1,27 @@
+.footer {
+  margin-top: auto;
+  border-top: 1px solid var(--clr-border);
+  background-color: var(--clr-surface);
+
+  &__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+    padding: 1rem var(--content-padding-x);
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  &__brand {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: var(--clr-primary);
+  }
+
+  &__copy {
+    font-size: 0.8125rem;
+    color: var(--clr-text-muted);
+  }
+}

@@ -1,0 +1,139 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: var(--clr-surface);
+  border-bottom: 1px solid var(--clr-border);
+  box-shadow: var(--shadow-sm);
+
+  &__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: var(--header-height);
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+    padding: 0 var(--content-padding-x);
+  }
+
+  &__logo {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    font-weight: 700;
+    font-size: 1.125rem;
+    color: var(--clr-primary);
+    transition: opacity var(--t);
+
+    &:hover {
+      opacity: 0.85;
+    }
+  }
+
+  &__logo-icon {
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+  }
+
+  &__logo-text {
+    letter-spacing: -0.02em;
+  }
+
+  // Desktop navigation
+  &__nav {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  &__nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.4rem 0.875rem;
+    border-radius: var(--radius);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--clr-text-muted);
+    transition: background-color var(--t), color var(--t);
+
+    &:hover {
+      background-color: var(--clr-bg);
+      color: var(--clr-text);
+    }
+
+    &--active {
+      background-color: var(--clr-primary-light);
+      color: var(--clr-primary);
+    }
+
+    &--favorites {
+      &.header__nav-link--active {
+        color: #e11d48;
+        background-color: #fff1f2;
+      }
+
+      &:hover {
+        color: #e11d48;
+      }
+    }
+  }
+
+  // Hamburger button (mobile only)
+  &__menu-btn {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius);
+    color: var(--clr-text-muted);
+    transition: background-color var(--t), color var(--t);
+
+    &:hover {
+      background-color: var(--clr-bg);
+      color: var(--clr-text);
+    }
+  }
+
+  // Mobile navigation dropdown
+  &__mobile-nav {
+    display: flex;
+    flex-direction: column;
+    padding: 0.5rem var(--content-padding-x) 1rem;
+    border-top: 1px solid var(--clr-border);
+    background-color: var(--clr-surface);
+  }
+
+  &__mobile-link {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--clr-text-muted);
+    border-bottom: 1px solid var(--clr-border);
+    transition: color var(--t);
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover,
+    &--active {
+      color: var(--clr-primary);
+    }
+  }
+}
+
+// ─── Responsive ───────────────────────────────────────────────────────────────
+@media (max-width: 640px) {
+  .header {
+    &__nav {
+      display: none;
+    }
+
+    &__menu-btn {
+      display: flex;
+    }
+  }
+}
