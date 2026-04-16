@@ -1,0 +1,60 @@
+<div class="page">
+  <div class="page__header">
+    <h1 class="page__title">Categories</h1>
+    <a routerLink="/categories/new" class="btn btn--primary">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" width="16" height="16">
+        <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      New Category
+    </a>
+  </div>
+
+  @if (categories().length === 0) {
+    <div class="empty-state">
+      <span class="empty-state__icon">🏷️</span>
+      <p class="empty-state__title">No categories yet</p>
+      <p class="empty-state__text">Create categories to organise your contacts.</p>
+      <a routerLink="/categories/new" class="btn btn--primary">Create your first category</a>
+    </div>
+  } @else {
+    <div class="category-grid">
+      @for (cat of categories(); track cat.id) {
+        <div class="category-card">
+          <div class="category-card__strip" [style.background-color]="cat.color"></div>
+
+          <div class="category-card__body">
+            <div class="category-card__info">
+              <span class="category-card__name">{{ cat.name }}</span>
+              <span class="category-card__count">
+                {{ contactCount(cat.id) }}
+                {{ contactCount(cat.id) === 1 ? 'contact' : 'contacts' }}
+              </span>
+            </div>
+
+            <div class="category-card__actions">
+              @if (deletingId() === cat.id) {
+                @if (contactCount(cat.id) > 0) {
+                  <span class="category-card__message category-card__message--error">
+                    Cannot delete: category has contacts
+                  </span>
+                  <button class="btn btn--secondary" (click)="cancelDelete()">OK</button>
+                } @else {
+                  <span class="category-card__message">Delete this category?</span>
+                  <button class="btn btn--danger" (click)="confirmDelete(cat.id)">Confirm</button>
+                  <button class="btn btn--secondary" (click)="cancelDelete()">Cancel</button>
+                }
+              } @else {
+                <a [routerLink]="['/categories', cat.id]" class="btn btn--secondary">View</a>
+                <button class="btn btn--ghost" (click)="requestDelete(cat.id)" aria-label="Delete {{ cat.name }}">
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" width="16" height="16">
+                    <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

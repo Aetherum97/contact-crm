@@ -1,0 +1,57 @@
+<div class="page">
+  <div class="page__header">
+    <h1 class="page__title">New Category</h1>
+  </div>
+
+  <div class="form-card">
+    <form [formGroup]="form" (ngSubmit)="submit()" class="form" novalidate>
+
+      <div class="form__group">
+        <label class="form__label" for="cat-name">Name <span aria-hidden="true">*</span></label>
+        <input
+          id="cat-name"
+          type="text"
+          formControlName="name"
+          class="form__control"
+          [class.form__control--invalid]="nameCtrl.invalid && nameCtrl.touched"
+          placeholder="e.g. Clients, Partners, Family…"
+          autocomplete="off"
+        />
+        @if (nameCtrl.touched && nameCtrl.errors) {
+          <span class="form__error" role="alert">
+            @if (nameCtrl.errors['required']) { Name is required. }
+            @else if (nameCtrl.errors['minlength']) { At least 2 characters required. }
+            @else if (nameCtrl.errors['maxlength']) { Maximum 50 characters allowed. }
+          </span>
+        }
+      </div>
+
+      <div class="form__group">
+        <span class="form__label">Colour</span>
+        <div class="colour-picker">
+          @for (colour of presetColors; track colour) {
+            <button
+              type="button"
+              class="colour-picker__swatch"
+              [style.background-color]="colour"
+              [class.colour-picker__swatch--selected]="colorCtrl.value === colour"
+              (click)="selectColor(colour)"
+              [attr.aria-label]="'Select colour ' + colour"
+              [attr.aria-pressed]="colorCtrl.value === colour"
+            ></button>
+          }
+        </div>
+        <div class="colour-preview">
+          <span class="colour-preview__dot" [style.background-color]="colorCtrl.value"></span>
+          <span class="colour-preview__label">{{ colorCtrl.value }}</span>
+        </div>
+      </div>
+
+      <div class="form__actions">
+        <button type="button" class="btn btn--secondary" (click)="cancel()">Cancel</button>
+        <button type="submit" class="btn btn--primary">Create Category</button>
+      </div>
+
+    </form>
+  </div>
+</div>
