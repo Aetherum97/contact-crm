@@ -1,0 +1,150 @@
+<div class="form-card">
+  <form [formGroup]="form" (ngSubmit)="submit()" class="form" novalidate>
+
+    <!-- First Name / Last Name -->
+    <div class="contact-form__row">
+      <div class="form__group">
+        <label class="form__label" for="cf-firstName">First Name <span aria-hidden="true">*</span></label>
+        <input
+          id="cf-firstName"
+          type="text"
+          formControlName="firstName"
+          class="form__control"
+          [class.form__control--invalid]="f.firstName.invalid && f.firstName.touched"
+          placeholder="Jane"
+          autocomplete="given-name"
+        />
+        @if (f.firstName.touched && f.firstName.errors) {
+          <span class="form__error" role="alert">
+            @if (f.firstName.errors['required']) { First name is required. }
+            @else if (f.firstName.errors['maxlength']) { Maximum 50 characters. }
+          </span>
+        }
+      </div>
+
+      <div class="form__group">
+        <label class="form__label" for="cf-lastName">Last Name <span aria-hidden="true">*</span></label>
+        <input
+          id="cf-lastName"
+          type="text"
+          formControlName="lastName"
+          class="form__control"
+          [class.form__control--invalid]="f.lastName.invalid && f.lastName.touched"
+          placeholder="Doe"
+          autocomplete="family-name"
+        />
+        @if (f.lastName.touched && f.lastName.errors) {
+          <span class="form__error" role="alert">
+            @if (f.lastName.errors['required']) { Last name is required. }
+            @else if (f.lastName.errors['maxlength']) { Maximum 50 characters. }
+          </span>
+        }
+      </div>
+    </div>
+
+    <!-- Email / Phone -->
+    <div class="contact-form__row">
+      <div class="form__group">
+        <label class="form__label" for="cf-email">Email <span aria-hidden="true">*</span></label>
+        <input
+          id="cf-email"
+          type="email"
+          formControlName="email"
+          class="form__control"
+          [class.form__control--invalid]="f.email.invalid && f.email.touched"
+          placeholder="jane@example.com"
+          autocomplete="email"
+        />
+        @if (f.email.touched && f.email.errors) {
+          <span class="form__error" role="alert">
+            @if (f.email.errors['required']) { Email is required. }
+            @else if (f.email.errors['email']) { Please enter a valid email address. }
+            @else if (f.email.errors['maxlength']) { Maximum 200 characters. }
+          </span>
+        }
+      </div>
+
+      <div class="form__group">
+        <label class="form__label" for="cf-phone">Phone</label>
+        <input
+          id="cf-phone"
+          type="tel"
+          formControlName="phone"
+          class="form__control"
+          [class.form__control--invalid]="f.phone.invalid && f.phone.touched"
+          placeholder="+33 6 12 34 56 78"
+          autocomplete="tel"
+        />
+        @if (f.phone.touched && f.phone.errors) {
+          <span class="form__error" role="alert">
+            @if (f.phone.errors['invalidPhone']) { Please enter a valid phone number. }
+            @else if (f.phone.errors['maxlength']) { Maximum 30 characters. }
+          </span>
+        }
+      </div>
+    </div>
+
+    <!-- Company / Job Title -->
+    <div class="contact-form__row">
+      <div class="form__group">
+        <label class="form__label" for="cf-company">Company</label>
+        <input
+          id="cf-company"
+          type="text"
+          formControlName="company"
+          class="form__control"
+          placeholder="Acme Corp"
+          autocomplete="organization"
+        />
+      </div>
+
+      <div class="form__group">
+        <label class="form__label" for="cf-jobTitle">Job Title</label>
+        <input
+          id="cf-jobTitle"
+          type="text"
+          formControlName="jobTitle"
+          class="form__control"
+          placeholder="Software Engineer"
+          autocomplete="organization-title"
+        />
+      </div>
+    </div>
+
+    <!-- Category -->
+    <div class="form__group">
+      <label class="form__label" for="cf-category">Category</label>
+      <select id="cf-category" formControlName="categoryId" class="form__control">
+        <option value="">No category</option>
+        @for (cat of categories(); track cat.id) {
+          <option [value]="cat.id">{{ cat.name }}</option>
+        }
+      </select>
+    </div>
+
+    <!-- Notes -->
+    <div class="form__group">
+      <label class="form__label" for="cf-notes">Notes</label>
+      <textarea
+        id="cf-notes"
+        formControlName="notes"
+        class="form__control contact-form__textarea"
+        rows="4"
+        placeholder="Additional notes about this contact…"
+      ></textarea>
+      @if (f.notes.touched && f.notes.errors) {
+        <span class="form__error" role="alert">
+          @if (f.notes.errors['maxlength']) { Maximum 1 000 characters. }
+        </span>
+      }
+    </div>
+
+    <div class="form__actions">
+      <button type="button" class="btn btn--secondary" (click)="cancel()">Cancel</button>
+      <button type="submit" class="btn btn--primary">
+        {{ isEditMode() ? 'Save changes' : 'Create Contact' }}
+      </button>
+    </div>
+
+  </form>
+</div>

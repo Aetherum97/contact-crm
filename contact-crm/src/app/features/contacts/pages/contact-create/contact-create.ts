@@ -1,13 +1,16 @@
 import { Component } from '@angular/core';
 
+import { ContactForm } from '../../components/contact-form/contact-form';
+
 @Component({
   selector: 'app-contact-create',
+  imports: [ContactForm],
   template: `
     <div class="page">
       <div class="page__header">
         <h1 class="page__title">New Contact</h1>
       </div>
-      <p style="color: var(--clr-text-muted)">Contact creation form coming soon.</p>
+      <app-contact-form />
     </div>
   `,
 })

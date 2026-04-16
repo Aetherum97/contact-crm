@@ -1,0 +1,162 @@
+<div class="page">
+  <div class="page__header">
+    <div class="contact-list__title-group">
+      <h1 class="page__title">Contacts</h1>
+      @if (allContacts().length > 0) {
+        <span class="contact-list__badge">{{ filteredContacts().length }} / {{ allContacts().length }}</span>
+      }
+    </div>
+    <a routerLink="/contacts/new" class="btn btn--primary">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" width="16" height="16">
+        <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      New Contact
+    </a>
+  </div>
+
+  <!-- Filter bar -->
+  @if (allContacts().length > 0) {
+    <div class="filter-bar">
+      <input
+        type="search"
+        class="filter-bar__search form__control"
+        placeholder="Search by name, email or company…"
+        aria-label="Search contacts"
+        (input)="setSearch($event)"
+      />
+
+      <select
+        class="filter-bar__select form__control"
+        aria-label="Filter by category"
+        (change)="setCategoryFilter($event)"
+      >
+        <option value="">All categories</option>
+        @for (cat of categories(); track cat.id) {
+          <option [value]="cat.id">{{ cat.name }}</option>
+        }
+      </select>
+
+      <button
+        class="btn filter-bar__fav-btn"
+        [class.filter-bar__fav-btn--active]="favoritesOnly()"
+        (click)="toggleFavoritesOnly()"
+        [attr.aria-pressed]="favoritesOnly()"
+      >
+        <svg viewBox="0 0 24 24" [attr.fill]="favoritesOnly() ? 'currentColor' : 'none'" width="15" height="15">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Favorites
+      </button>
+
+      <select
+        class="filter-bar__select form__control"
+        aria-label="Sort contacts"
+        (change)="setSort($event)"
+      >
+        <option value="name-asc">Name A → Z</option>
+        <option value="name-desc">Name Z → A</option>
+        <option value="date-desc">Newest first</option>
+        <option value="date-asc">Oldest first</option>
+      </select>
+    </div>
+  }
+
+  <!-- Empty state: no contacts at all -->
+  @if (allContacts().length === 0) {
+    <div class="empty-state">
+      <span class="empty-state__icon">👥</span>
+      <p class="empty-state__title">No contacts yet</p>
+      <p class="empty-state__text">Start building your CRM by adding your first contact.</p>
+      <a routerLink="/contacts/new" class="btn btn--primary">Add your first contact</a>
+    </div>
+
+  <!-- Empty state: no results after filtering -->
+  } @else if (filteredContacts().length === 0) {
+    <div class="empty-state">
+      <span class="empty-state__icon">🔍</span>
+      <p class="empty-state__title">No contacts match your filters</p>
+      <p class="empty-state__text">Try adjusting your search or clearing the filters.</p>
+    </div>
+
+  } @else {
+    <ul class="contact-list" role="list">
+      @for (contact of filteredContacts(); track contact.id) {
+        <li class="contact-card" [class.contact-card--confirming]="deletingId() === contact.id">
+
+          <!-- Avatar -->
+          <div class="contact-card__avatar" aria-hidden="true">
+            {{ contact.firstName.charAt(0) }}{{ contact.lastName.charAt(0) }}
+          </div>
+
+          <!-- Info -->
+          <div class="contact-card__info">
+            <a [routerLink]="['/contacts', contact.id]" class="contact-card__name">
+              {{ contact.firstName }} {{ contact.lastName }}
+            </a>
+            @if (contact.jobTitle || contact.company) {
+              <span class="contact-card__meta">
+                {{ contact.jobTitle }}@if (contact.jobTitle && contact.company) { · }{{ contact.company }}
+              </span>
+            }
+            <span class="contact-card__email">{{ contact.email }}</span>
+          </div>
+
+          <!-- Category badge -->
+          @if (contact.categoryId && categoryMap().get(contact.categoryId); as cat) {
+            <span
+              class="contact-card__category"
+              [style.background-color]="cat.color + '22'"
+              [style.color]="cat.color"
+            >{{ cat.name }}</span>
+          }
+
+          <!-- Actions -->
+          <div class="contact-card__actions">
+            @if (deletingId() === contact.id) {
+              <span class="contact-card__confirm-text">Delete?</span>
+              <button class="btn btn--danger" (click)="confirmDelete(contact.id)">Yes</button>
+              <button class="btn btn--secondary" (click)="cancelDelete()">No</button>
+            } @else {
+              <!-- Favourite toggle -->
+              <button
+                class="btn btn--icon btn--ghost contact-card__fav"
+                [class.contact-card__fav--active]="contact.favorite"
+                (click)="toggleFavorite(contact.id, $event)"
+                [attr.aria-label]="contact.favorite ? 'Remove from favourites' : 'Add to favourites'"
+                [attr.aria-pressed]="contact.favorite"
+              >
+                <svg viewBox="0 0 24 24" [attr.fill]="contact.favorite ? 'currentColor' : 'none'" width="17" height="17">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+
+              <!-- Edit -->
+              <a
+                [routerLink]="['/contacts', contact.id, 'edit']"
+                class="btn btn--icon btn--ghost"
+                aria-label="Edit contact"
+              >
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" width="16" height="16">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </a>
+
+              <!-- Delete -->
+              <button
+                class="btn btn--icon btn--ghost"
+                (click)="requestDelete(contact.id)"
+                [attr.aria-label]="'Delete ' + contact.firstName + ' ' + contact.lastName"
+              >
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" width="16" height="16">
+                  <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+            }
+          </div>
+
+        </li>
+      }
+    </ul>
+  }
+</div>

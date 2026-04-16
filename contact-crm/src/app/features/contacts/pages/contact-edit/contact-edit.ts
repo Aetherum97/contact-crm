@@ -1,14 +1,22 @@
-import { Component } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
+import { RouterLink } from '@angular/router';
+
+import { ContactsService } from '../../../../core/services/contacts.service';
+import { ContactForm } from '../../components/contact-form/contact-form';
 
 @Component({
   selector: 'app-contact-edit',
-  template: `
-    <div class="page">
-      <div class="page__header">
-        <h1 class="page__title">Edit Contact</h1>
-      </div>
-      <p style="color: var(--clr-text-muted)">Contact edit form coming soon.</p>
-    </div>
-  `,
+  imports: [RouterLink, ContactForm],
+  templateUrl: './contact-edit.html',
+  styleUrl: './contact-edit.scss',
 })
-export class ContactEdit {}
+export class ContactEdit {
+  private readonly contactsService = inject(ContactsService);
+
+  // Bound from route param via withComponentInputBinding()
+  readonly id = input.required<string>();
+
+  protected readonly contact = computed(() =>
+    this.contactsService.getById(this.id()),
+  );
+}
