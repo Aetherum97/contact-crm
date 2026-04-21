@@ -4,13 +4,15 @@ import { Router, RouterLink } from '@angular/router';
 
 import { CategoriesService } from '../../../../core/services/categories.service';
 import { ContactsService } from '../../../../core/services/contacts.service';
+import { FullNamePipe } from '../../../../shared/pipes/full-name.pipe';
+import { InitialsPipe } from '../../../../shared/pipes/initials.pipe';
 import { PRESET_COLORS } from '../category-create/category-create';
 
 type DeleteState = 'idle' | 'confirm' | 'blocked';
 
 @Component({
   selector: 'app-category-detail',
-  imports: [RouterLink, ReactiveFormsModule],
+  imports: [RouterLink, ReactiveFormsModule, FullNamePipe, InitialsPipe],
   templateUrl: './category-detail.html',
   styleUrl: './category-detail.scss',
 })

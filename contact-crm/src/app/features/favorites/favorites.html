@@ -22,10 +22,12 @@
     <div class="fav-filter-bar">
       <input
         type="search"
+        appDebounceInput
+        [debounceTime]="300"
+        (debouncedInput)="searchQuery.set($event)"
         class="form__control fav-filter-bar__search"
         placeholder="Search favourites…"
         aria-label="Search favourite contacts"
-        (input)="setSearch($event)"
       />
       <select
         class="form__control fav-filter-bar__sort"
@@ -51,13 +53,11 @@
         @for (contact of favorites(); track contact.id) {
           <li class="fav-card">
 
-            <div class="fav-card__avatar" aria-hidden="true">
-              {{ contact.firstName.charAt(0) }}{{ contact.lastName.charAt(0) }}
-            </div>
+            <div class="fav-card__avatar" aria-hidden="true">{{ contact | initials }}</div>
 
             <div class="fav-card__info">
               <a [routerLink]="['/contacts', contact.id]" class="fav-card__name">
-                {{ contact.firstName }} {{ contact.lastName }}
+                {{ contact | fullName }}
               </a>
               @if (contact.jobTitle || contact.company) {
                 <span class="fav-card__role">

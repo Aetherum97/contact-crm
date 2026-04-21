@@ -1,5 +1,8 @@
 import { Routes } from '@angular/router';
 
+import { unsavedChangesGuard } from './core/guards/unsaved-changes.guard';
+import { contactResolver } from './core/resolvers/contact.resolver';
+
 export const routes: Routes = [
   {
     path: '',
@@ -21,29 +24,32 @@ export const routes: Routes = [
       {
         path: 'new',
         loadComponent: () =>
-          import('./features/contacts/pages/contact-create/contact-create').then(
-            (m) => m.ContactCreate,
-          ),
+          import(
+            './features/contacts/pages/contact-create/contact-create'
+          ).then((m) => m.ContactCreate),
         title: 'New Contact — Contact CRM',
+        canDeactivate: [unsavedChangesGuard],
       },
       {
         path: ':id',
+        resolve: { contact: contactResolver },
         children: [
           {
             path: '',
             loadComponent: () =>
-              import('./features/contacts/pages/contact-detail/contact-detail').then(
-                (m) => m.ContactDetail,
-              ),
+              import(
+                './features/contacts/pages/contact-detail/contact-detail'
+              ).then((m) => m.ContactDetail),
             title: 'Contact Details — Contact CRM',
           },
           {
             path: 'edit',
             loadComponent: () =>
-              import('./features/contacts/pages/contact-edit/contact-edit').then(
-                (m) => m.ContactEdit,
-              ),
+              import(
+                './features/contacts/pages/contact-edit/contact-edit'
+              ).then((m) => m.ContactEdit),
             title: 'Edit Contact — Contact CRM',
+            canDeactivate: [unsavedChangesGuard],
           },
         ],
       },
@@ -55,9 +61,9 @@ export const routes: Routes = [
       {
         path: '',
         loadComponent: () =>
-          import('./features/categories/pages/category-list/category-list').then(
-            (m) => m.CategoryList,
-          ),
+          import(
+            './features/categories/pages/category-list/category-list'
+          ).then((m) => m.CategoryList),
         title: 'Categories — Contact CRM',
       },
       {

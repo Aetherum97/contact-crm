@@ -3,10 +3,12 @@ import { RouterLink } from '@angular/router';
 
 import { CategoriesService } from '../../core/services/categories.service';
 import { ContactsService } from '../../core/services/contacts.service';
+import { FullNamePipe } from '../../shared/pipes/full-name.pipe';
+import { InitialsPipe } from '../../shared/pipes/initials.pipe';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [RouterLink],
+  imports: [RouterLink, FullNamePipe, InitialsPipe],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
 })

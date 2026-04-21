@@ -19,10 +19,12 @@
     <div class="filter-bar">
       <input
         type="search"
+        appDebounceInput
+        [debounceTime]="300"
+        (debouncedInput)="searchQuery.set($event)"
         class="filter-bar__search form__control"
         placeholder="Search by name, email or company…"
         aria-label="Search contacts"
-        (input)="setSearch($event)"
       />
 
       <select
@@ -84,14 +86,12 @@
         <li class="contact-card" [class.contact-card--confirming]="deletingId() === contact.id">
 
           <!-- Avatar -->
-          <div class="contact-card__avatar" aria-hidden="true">
-            {{ contact.firstName.charAt(0) }}{{ contact.lastName.charAt(0) }}
-          </div>
+          <div class="contact-card__avatar" aria-hidden="true">{{ contact | initials }}</div>
 
           <!-- Info -->
           <div class="contact-card__info">
             <a [routerLink]="['/contacts', contact.id]" class="contact-card__name">
-              {{ contact.firstName }} {{ contact.lastName }}
+              {{ contact | fullName }}
             </a>
             @if (contact.jobTitle || contact.company) {
               <span class="contact-card__meta">

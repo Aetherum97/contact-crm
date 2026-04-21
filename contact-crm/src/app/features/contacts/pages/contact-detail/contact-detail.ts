@@ -1,13 +1,15 @@
 import { Component, computed, inject, input, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
+import { Contact } from '../../../../core/models/contact.model';
 import { CategoriesService } from '../../../../core/services/categories.service';
 import { ContactsService } from '../../../../core/services/contacts.service';
+import { FullNamePipe } from '../../../../shared/pipes/full-name.pipe';
+import { InitialsPipe } from '../../../../shared/pipes/initials.pipe';
 
 @Component({
   selector: 'app-contact-detail',
-  imports: [RouterLink],
+  imports: [RouterLink, FullNamePipe, InitialsPipe],
   templateUrl: './contact-detail.html',
   styleUrl: './contact-detail.scss',
 })
@@ -16,22 +18,23 @@ export class ContactDetail {
   private readonly categoriesService = inject(CategoriesService);
   private readonly router = inject(Router);
 
-  // Bound from route param via withComponentInputBinding()
-  readonly id = input.required<string>();
+  // Provided by contactResolver via withComponentInputBinding()
+  readonly contact = input.required<Contact>();
 
-  protected readonly contact = computed(() =>
-    this.contactsService.getById(this.id()),
+  // Reactive version: updates after mutations (toggleFavorite, update, etc.)
+  protected readonly liveContact = computed(
+    () => this.contactsService.getById(this.contact().id) ?? this.contact(),
   );
 
   protected readonly category = computed(() => {
-    const catId = this.contact()?.categoryId;
+    const catId = this.liveContact().categoryId;
     return catId ? this.categoriesService.getById(catId) : null;
   });
 
   protected readonly deleteConfirm = signal(false);
 
   protected toggleFavorite(): void {
-    this.contactsService.toggleFavorite(this.id());
+    this.contactsService.toggleFavorite(this.contact().id);
   }
 
   protected requestDelete(): void {
@@ -43,7 +46,7 @@ export class ContactDetail {
   }
 
   protected confirmDelete(): void {
-    this.contactsService.delete(this.id());
+    this.contactsService.delete(this.contact().id);
     this.router.navigate(['/contacts']);
   }
 

@@ -1,7 +1,8 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, input, viewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { ContactsService } from '../../../../core/services/contacts.service';
+import { Contact } from '../../../../core/models/contact.model';
+import { CanDeactivateComponent } from '../../../../core/guards/unsaved-changes.guard';
 import { ContactForm } from '../../components/contact-form/contact-form';
 
 @Component({
@@ -10,13 +11,13 @@ import { ContactForm } from '../../components/contact-form/contact-form';
   templateUrl: './contact-edit.html',
   styleUrl: './contact-edit.scss',
 })
-export class ContactEdit {
-  private readonly contactsService = inject(ContactsService);
+export class ContactEdit implements CanDeactivateComponent {
+  // Provided by contactResolver via withComponentInputBinding()
+  readonly contact = input.required<Contact>();
 
-  // Bound from route param via withComponentInputBinding()
-  readonly id = input.required<string>();
+  private readonly formComponent = viewChild.required(ContactForm);
 
-  protected readonly contact = computed(() =>
-    this.contactsService.getById(this.id()),
-  );
+  canDeactivate(): boolean {
+    return this.formComponent().canDeactivate();
+  }
 }

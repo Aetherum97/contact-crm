@@ -4,12 +4,15 @@ import { RouterLink } from '@angular/router';
 import { Category } from '../../../../core/models/category.model';
 import { CategoriesService } from '../../../../core/services/categories.service';
 import { ContactsService } from '../../../../core/services/contacts.service';
+import { DebounceInputDirective } from '../../../../shared/directives/debounce-input.directive';
+import { FullNamePipe } from '../../../../shared/pipes/full-name.pipe';
+import { InitialsPipe } from '../../../../shared/pipes/initials.pipe';
 
 type SortKey = 'name-asc' | 'name-desc' | 'date-desc' | 'date-asc';
 
 @Component({
   selector: 'app-contact-list',
-  imports: [RouterLink],
+  imports: [RouterLink, DebounceInputDirective, FullNamePipe, InitialsPipe],
   templateUrl: './contact-list.html',
   styleUrl: './contact-list.scss',
 })
@@ -81,10 +84,6 @@ export class ContactList {
   protected readonly deletingId = signal<string | null>(null);
 
   // ── Event handlers ───────────────────────────────────────────────────────────
-  protected setSearch(event: Event): void {
-    this.searchQuery.set((event.target as HTMLInputElement).value);
-  }
-
   protected setCategoryFilter(event: Event): void {
     this.categoryFilter.set((event.target as HTMLSelectElement).value);
   }

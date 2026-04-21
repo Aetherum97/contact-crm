@@ -113,12 +113,10 @@
         <ul class="contact-list">
           @for (contact of contacts(); track contact.id) {
             <li class="contact-item">
-              <div class="contact-item__avatar">
-                {{ contact.firstName.charAt(0) }}{{ contact.lastName.charAt(0) }}
-              </div>
+              <div class="contact-item__avatar">{{ contact | initials }}</div>
               <div class="contact-item__info">
                 <a [routerLink]="['/contacts', contact.id]" class="contact-item__name">
-                  {{ contact.firstName }} {{ contact.lastName }}
+                  {{ contact | fullName }}
                 </a>
                 @if (contact.jobTitle || contact.company) {
                   <span class="contact-item__role">

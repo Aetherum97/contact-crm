@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, viewChild } from '@angular/core';
 
+import { CanDeactivateComponent } from '../../../../core/guards/unsaved-changes.guard';
 import { ContactForm } from '../../components/contact-form/contact-form';
 
 @Component({
@@ -14,4 +15,10 @@ import { ContactForm } from '../../components/contact-form/contact-form';
     </div>
   `,
 })
-export class ContactCreate {}
+export class ContactCreate implements CanDeactivateComponent {
+  private readonly formComponent = viewChild.required(ContactForm);
+
+  canDeactivate(): boolean {
+    return this.formComponent().canDeactivate();
+  }
+}

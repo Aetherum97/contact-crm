@@ -83,12 +83,10 @@
         <ul class="recent-list" role="list">
           @for (contact of recentContacts(); track contact.id) {
             <li class="recent-item">
-              <div class="recent-item__avatar" aria-hidden="true">
-                {{ contact.firstName.charAt(0) }}{{ contact.lastName.charAt(0) }}
-              </div>
+              <div class="recent-item__avatar" aria-hidden="true">{{ contact | initials }}</div>
               <div class="recent-item__info">
                 <a [routerLink]="['/contacts', contact.id]" class="recent-item__name">
-                  {{ contact.firstName }} {{ contact.lastName }}
+                  {{ contact | fullName }}
                 </a>
                 <span class="recent-item__sub">
                   {{ contact.email }}

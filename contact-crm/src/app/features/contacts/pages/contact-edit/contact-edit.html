@@ -1,23 +1,12 @@
-@if (contact(); as c) {
-  <div class="page">
-    <div class="page__header">
-      <h1 class="page__title">Edit Contact</h1>
-      <a [routerLink]="['/contacts', c.id]" class="btn btn--ghost">
-        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" width="16" height="16">
-          <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        Back to contact
-      </a>
-    </div>
-    <app-contact-form [contact]="c" />
+<div class="page">
+  <div class="page__header">
+    <h1 class="page__title">Edit Contact</h1>
+    <a [routerLink]="['/contacts', contact().id]" class="btn btn--ghost">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" width="16" height="16">
+        <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Back to contact
+    </a>
   </div>
-} @else {
-  <div class="page">
-    <div class="empty-state">
-      <span class="empty-state__icon">🔍</span>
-      <p class="empty-state__title">Contact not found</p>
-      <p class="empty-state__text">This contact may have been deleted.</p>
-      <a routerLink="/contacts" class="btn btn--primary">Back to contacts</a>
-    </div>
-  </div>
-}
+  <app-contact-form [contact]="contact()" />
+</div>
