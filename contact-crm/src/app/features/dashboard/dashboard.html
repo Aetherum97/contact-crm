@@ -1,0 +1,178 @@
+<div class="page">
+  <div class="page__header">
+    <h1 class="page__title">Dashboard</h1>
+  </div>
+
+  <!-- Stats grid -->
+  <div class="stats-grid">
+
+    <a routerLink="/contacts" class="stat-card stat-card--link">
+      <div class="stat-card__icon-wrap stat-card__icon-wrap--blue">
+        <svg viewBox="0 0 24 24" fill="none" width="22" height="22" aria-hidden="true">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="stat-card__body">
+        <span class="stat-card__value">{{ totalContacts() }}</span>
+        <span class="stat-card__label">Total Contacts</span>
+      </div>
+    </a>
+
+    <a routerLink="/favorites" class="stat-card stat-card--link">
+      <div class="stat-card__icon-wrap stat-card__icon-wrap--rose">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22" aria-hidden="true">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+        </svg>
+      </div>
+      <div class="stat-card__body">
+        <span class="stat-card__value">{{ totalFavorites() }}</span>
+        <span class="stat-card__label">Favourites</span>
+      </div>
+    </a>
+
+    <a routerLink="/categories" class="stat-card stat-card--link">
+      <div class="stat-card__icon-wrap stat-card__icon-wrap--violet">
+        <svg viewBox="0 0 24 24" fill="none" width="22" height="22" aria-hidden="true">
+          <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <line x1="7" y1="7" x2="7.01" y2="7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="stat-card__body">
+        <span class="stat-card__value">{{ totalCategories() }}</span>
+        <span class="stat-card__label">Categories</span>
+      </div>
+    </a>
+
+    <div class="stat-card">
+      <div class="stat-card__icon-wrap stat-card__icon-wrap--green">
+        <svg viewBox="0 0 24 24" fill="none" width="22" height="22" aria-hidden="true">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <line x1="16" y1="2" x2="16" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <line x1="8" y1="2" x2="8" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="stat-card__body">
+        <span class="stat-card__value">{{ addedThisMonth() }}</span>
+        <span class="stat-card__label">Added this month</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Recent contacts + Quick actions -->
+  <div class="dashboard-grid">
+
+    <!-- Recent contacts -->
+    <section class="dashboard-section">
+      <div class="dashboard-section__header">
+        <h2 class="dashboard-section__title">Recent Contacts</h2>
+        <a routerLink="/contacts" class="dashboard-section__link">View all →</a>
+      </div>
+
+      @if (recentContacts().length === 0) {
+        <div class="empty-state">
+          <span class="empty-state__icon">👥</span>
+          <p class="empty-state__title">No contacts yet</p>
+          <p class="empty-state__text">Add your first contact to get started.</p>
+          <a routerLink="/contacts/new" class="btn btn--primary">Add a contact</a>
+        </div>
+      } @else {
+        <ul class="recent-list" role="list">
+          @for (contact of recentContacts(); track contact.id) {
+            <li class="recent-item">
+              <div class="recent-item__avatar" aria-hidden="true">
+                {{ contact.firstName.charAt(0) }}{{ contact.lastName.charAt(0) }}
+              </div>
+              <div class="recent-item__info">
+                <a [routerLink]="['/contacts', contact.id]" class="recent-item__name">
+                  {{ contact.firstName }} {{ contact.lastName }}
+                </a>
+                <span class="recent-item__sub">
+                  {{ contact.email }}
+                </span>
+              </div>
+              @if (contact.categoryId && categoryMap().get(contact.categoryId); as catName) {
+                <span
+                  class="recent-item__badge"
+                  [style.background-color]="(categoryColorMap().get(contact.categoryId) ?? '#6366f1') + '22'"
+                  [style.color]="categoryColorMap().get(contact.categoryId) ?? '#6366f1'"
+                >{{ catName }}</span>
+              }
+              @if (contact.favorite) {
+                <svg class="recent-item__fav" viewBox="0 0 24 24" fill="currentColor" width="14" height="14" aria-label="Favourite">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                </svg>
+              }
+            </li>
+          }
+        </ul>
+      }
+    </section>
+
+    <!-- Quick actions -->
+    <section class="dashboard-section">
+      <div class="dashboard-section__header">
+        <h2 class="dashboard-section__title">Quick Actions</h2>
+      </div>
+      <div class="quick-actions">
+        <a routerLink="/contacts/new" class="quick-action">
+          <div class="quick-action__icon quick-action__icon--blue">
+            <svg viewBox="0 0 24 24" fill="none" width="20" height="20" aria-hidden="true">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <line x1="19" y1="8" x2="19" y2="14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <line x1="22" y1="11" x2="16" y2="11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="quick-action__text">
+            <span class="quick-action__label">Add a Contact</span>
+            <span class="quick-action__desc">Create a new contact entry</span>
+          </div>
+        </a>
+
+        <a routerLink="/categories/new" class="quick-action">
+          <div class="quick-action__icon quick-action__icon--violet">
+            <svg viewBox="0 0 24 24" fill="none" width="20" height="20" aria-hidden="true">
+              <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <line x1="7" y1="7" x2="7.01" y2="7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <line x1="12" y1="2" x2="12" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="quick-action__text">
+            <span class="quick-action__label">Add a Category</span>
+            <span class="quick-action__desc">Organise contacts into groups</span>
+          </div>
+        </a>
+
+        <a routerLink="/contacts" class="quick-action">
+          <div class="quick-action__icon quick-action__icon--green">
+            <svg viewBox="0 0 24 24" fill="none" width="20" height="20" aria-hidden="true">
+              <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="quick-action__text">
+            <span class="quick-action__label">Browse Contacts</span>
+            <span class="quick-action__desc">Search, filter and sort your list</span>
+          </div>
+        </a>
+
+        <a routerLink="/favorites" class="quick-action">
+          <div class="quick-action__icon quick-action__icon--rose">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20" aria-hidden="true">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </div>
+          <div class="quick-action__text">
+            <span class="quick-action__label">View Favourites</span>
+            <span class="quick-action__desc">Your starred contacts</span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+  </div>
+</div>

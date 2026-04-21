@@ -1,0 +1,100 @@
+<div class="page">
+  <div class="page__header">
+    <div class="fav-title-group">
+      <h1 class="page__title">Favorites</h1>
+      @if (totalFavorites() > 0) {
+        <span class="fav-count">{{ totalFavorites() }}</span>
+      }
+    </div>
+  </div>
+
+  @if (totalFavorites() === 0) {
+    <!-- Global empty state: no favorites at all -->
+    <div class="empty-state">
+      <span class="empty-state__icon">🤍</span>
+      <p class="empty-state__title">No favourites yet</p>
+      <p class="empty-state__text">Mark contacts as favourite from the contact list or their detail page.</p>
+      <a routerLink="/contacts" class="btn btn--primary">Browse contacts</a>
+    </div>
+
+  } @else {
+    <!-- Search + sort bar -->
+    <div class="fav-filter-bar">
+      <input
+        type="search"
+        class="form__control fav-filter-bar__search"
+        placeholder="Search favourites…"
+        aria-label="Search favourite contacts"
+        (input)="setSearch($event)"
+      />
+      <select
+        class="form__control fav-filter-bar__sort"
+        aria-label="Sort favourites"
+        (change)="setSort($event)"
+      >
+        <option value="name-asc">Name A → Z</option>
+        <option value="name-desc">Name Z → A</option>
+        <option value="date-desc">Newest first</option>
+        <option value="date-asc">Oldest first</option>
+      </select>
+    </div>
+
+    @if (favorites().length === 0) {
+      <!-- No results after search -->
+      <div class="empty-state">
+        <span class="empty-state__icon">🔍</span>
+        <p class="empty-state__title">No results</p>
+        <p class="empty-state__text">No favourite contact matches your search.</p>
+      </div>
+    } @else {
+      <ul class="fav-list" role="list">
+        @for (contact of favorites(); track contact.id) {
+          <li class="fav-card">
+
+            <div class="fav-card__avatar" aria-hidden="true">
+              {{ contact.firstName.charAt(0) }}{{ contact.lastName.charAt(0) }}
+            </div>
+
+            <div class="fav-card__info">
+              <a [routerLink]="['/contacts', contact.id]" class="fav-card__name">
+                {{ contact.firstName }} {{ contact.lastName }}
+              </a>
+              @if (contact.jobTitle || contact.company) {
+                <span class="fav-card__role">
+                  {{ contact.jobTitle }}@if (contact.jobTitle && contact.company) { · }{{ contact.company }}
+                </span>
+              }
+              <span class="fav-card__email">{{ contact.email }}</span>
+            </div>
+
+            @if (contact.categoryId && categoryMap().get(contact.categoryId); as cat) {
+              <span
+                class="fav-card__category"
+                [style.background-color]="cat.color + '22'"
+                [style.color]="cat.color"
+              >{{ cat.name }}</span>
+            }
+
+            <div class="fav-card__actions">
+              <a
+                [routerLink]="['/contacts', contact.id]"
+                class="btn btn--secondary"
+              >View</a>
+              <button
+                class="btn btn--icon fav-card__unfav"
+                (click)="unfavorite(contact.id)"
+                aria-label="Remove from favourites"
+                title="Remove from favourites"
+              >
+                <svg viewBox="0 0 24 24" fill="currentColor" width="17" height="17" aria-hidden="true">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+            </div>
+
+          </li>
+        }
+      </ul>
+    }
+  }
+</div>
